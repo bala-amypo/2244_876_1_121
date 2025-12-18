@@ -15,12 +15,14 @@ public class ExamSession {
     private LocalDate examDate;
     private String examTime;
 
-    
-    
+    @ManyToMany
+    private List<Student> students;
+
+    // Default constructor
     public ExamSession() {
     }
 
-    
+    // Parameterized constructor
     public ExamSession(String courseCode, LocalDate examDate, String examTime, List<Student> students) {
         this.courseCode = courseCode;
         this.examDate = examDate;
@@ -28,7 +30,7 @@ public class ExamSession {
         this.students = students;
     }
 
-    
+    // Getters and Setters
     public Long getId() {
         return id;
     }

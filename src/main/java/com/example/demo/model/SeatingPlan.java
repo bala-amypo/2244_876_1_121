@@ -12,17 +12,17 @@ public class SeatingPlan {
     private Long examSessionId;
     private String roomNumber;
 
-    
+    // Default constructor
     public SeatingPlan() {
     }
 
-    
+    // Parameterized constructor
     public SeatingPlan(Long examSessionId, String roomNumber) {
         this.examSessionId = examSessionId;
         this.roomNumber = roomNumber;
     }
 
-   
+    // Getters and Setters
     public Long getId() {
         return id;
     }
