@@ -13,7 +13,7 @@ public class ExamRoomController {
     private final ExamRoomService examRoomService;
 
     public ExamRoomController(ExamRoomService examRoomService) {
-        this.ExamRoomService = ExamRoomService;
+        this.examRoomService = examRoomService;
     }
 
     @PostMapping
