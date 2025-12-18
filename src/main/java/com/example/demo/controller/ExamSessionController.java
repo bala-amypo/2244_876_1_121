@@ -1,15 +1,28 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.ExamSession;
+import com.example.demo.service.ExamSessionService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
-@RequestMapping("/sessions")
+@RequestMapping("/examsessions")
 public class ExamSessionController {
 
-    private final ExamSessionService service;
+    private final ExamSessionService examSessionService;
 
-    public ExamSessionController(ExamSessionService service) {
-        this.service = service;
+    public ExamSessionController(ExamSessionService examSessionService) {
+        this.examSessionService = examSessionService;
     }
 
     @PostMapping
-    public ExamSession add(@RequestBody ExamSession session) {
-        return service.addSession(session);
+    public ExamSession createSession(@RequestBody ExamSession session) {
+        return examSessionService.save(session);
+    }
+
+    @GetMapping
+    public List<ExamSession> getAllSessions() {
+        return examSessionService.getAll();
     }
 }
