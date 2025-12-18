@@ -13,16 +13,16 @@ public class ExamRoomController {
     private final ExamRoomService examRoomService;
 
     public ExamRoomController(ExamRoomService examRoomService) {
-        this.examRoomService = examRoomService;
+        this.ExamRoomService = ExamRoomService;
     }
 
     @PostMapping
     public ExamRoom createRoom(@RequestBody ExamRoom room) {
-        return examRoomService.save(room);
+        return ExamRoomService.save(room);
     }
 
     @GetMapping
     public List<ExamRoom> getAllRooms() {
-        return examRoomService.getAll();
+        return ExamRoomService.getAll();
     }
 }
