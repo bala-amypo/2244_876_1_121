@@ -1,7 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.model.Student;
 import com.example.demo.repository.StudentRepository;
+import com.example.demo.service.StudentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,12 +17,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student addStudent(Student student) {
+    public Student save(Student student) {
         return studentRepository.save(student);
     }
 
     @Override
-    public List<Student> getAllStudents() {
+    public List<Student> getAll() {
         return studentRepository.findAll();
     }
 }

@@ -1,7 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.model.ExamRoom;
 import com.example.demo.repository.ExamRoomRepository;
+import com.example.demo.service.ExamRoomService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,12 +17,12 @@ public class ExamRoomServiceImpl implements ExamRoomService {
     }
 
     @Override
-    public ExamRoom addRoom(ExamRoom room) {
+    public ExamRoom save(ExamRoom room) {
         return examRoomRepository.save(room);
     }
 
     @Override
-    public List<ExamRoom> getAllRooms() {
+    public List<ExamRoom> getAll() {
         return examRoomRepository.findAll();
     }
 }

@@ -1,10 +1,11 @@
-package com.example.demo.repository;
+package com.example.demo.service;
 
-import com.example.demo.model.SeatingPlan;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.demo.model.Student;
 import java.util.List;
 
-public interface SeatingPlanRepository extends JpaRepository<SeatingPlan, Long> {
+public interface StudentService {
 
-    List<SeatingPlan> findAllByExamSessionId(Long examSessionId);
+    Student save(Student student);
+
+    List<Student> getAll();
 }
