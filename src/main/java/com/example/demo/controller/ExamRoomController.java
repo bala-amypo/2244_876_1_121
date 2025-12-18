@@ -18,11 +18,11 @@ public class ExamRoomController {
 
     @PostMapping
     public ExamRoom createRoom(@RequestBody ExamRoom room) {
-        return ExamRoomService.save(room);
+        return examRoomService.save(room);
     }
 
     @GetMapping
     public List<ExamRoom> getAllRooms() {
-        return ExamRoomService.getAll();
+        return examRoomService.getAll();
     }
 }
