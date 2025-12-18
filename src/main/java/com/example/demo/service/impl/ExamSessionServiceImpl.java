@@ -10,19 +10,24 @@ import java.util.List;
 @Service
 public class ExamSessionServiceImpl implements ExamSessionService {
 
-    private final ExamSessionRepository examSessionRepository;
+    private final ExamSessionRepository repository;
 
-    public ExamSessionServiceImpl(ExamSessionRepository examSessionRepository) {
-        this.examSessionRepository = examSessionRepository;
+    public ExamSessionServiceImpl(ExamSessionRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public ExamSession save(ExamSession session) {
-        return examSessionRepository.save(session);
+        return repository.save(session);
     }
 
     @Override
     public List<ExamSession> getAll() {
-        return examSessionRepository.findAll();
+        return repository.findAll();
+    }
+
+    @Override
+    public ExamSession getSession(Long id) {
+        return repository.findById(id).orElse(null);
     }
 }
