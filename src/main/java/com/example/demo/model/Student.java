@@ -28,7 +28,7 @@ public class Student {
         this.year = year;
     }
 
-    // Getters and Setters
+    
     public Long getId() {
         return id;
     }
