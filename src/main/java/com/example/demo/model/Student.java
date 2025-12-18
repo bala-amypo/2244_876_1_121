@@ -16,11 +16,11 @@ public class Student {
     private String department;
     private Integer year;
 
-    // Default constructor
+    
     public Student() {
     }
 
-    // Parameterized constructor
+    
     public Student(String rollNumber, String name, String department, Integer year) {
         this.rollNumber = rollNumber;
         this.name = name;
@@ -28,7 +28,7 @@ public class Student {
         this.year = year;
     }
 
-    // Getters and Setters
+    
     public Long getId() {
         return id;
     }
