@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.SeatingPlan;
 import com.example.demo.service.SeatingPlanService;
-import io.swagger.v3.oas.annotations.Operation;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -17,19 +16,16 @@ public class SeatingPlanController {
         this.seatingPlanService = seatingPlanService;
     }
 
-    @Operation(summary = "Generate seating plan for an exam session")
     @PostMapping("/generate/{sessionId}")
     public SeatingPlan generatePlan(@PathVariable Long sessionId) {
         return seatingPlanService.generatePlan(sessionId);
     }
 
-    @Operation(summary = "Get seating plan by ID")
     @GetMapping("/{planId}")
     public SeatingPlan getPlan(@PathVariable Long planId) {
         return seatingPlanService.getPlan(planId);
     }
 
-    @Operation(summary = "Get seating plans by session ID")
     @GetMapping("/session/{sessionId}")
     public List<SeatingPlan> getPlansBySession(@PathVariable Long sessionId) {
         return seatingPlanService.getPlansBySession(sessionId);
