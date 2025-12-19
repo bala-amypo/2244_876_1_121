@@ -3,38 +3,39 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "exam_rooms")
 public class ExamRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String roomNumber;
 
+    private Integer capacity;
     private Integer rows;
     private Integer columns;
-    private Integer capacity;
 
-    // Default constructor
+    // No-arg constructor
     public ExamRoom() {
     }
 
-    // Parameterized constructor
-    public ExamRoom(String roomNumber, Integer rows, Integer columns) {
+    // All-args constructor
+    public ExamRoom(Long id, String roomNumber, Integer capacity, Integer rows, Integer columns) {
+        this.id = id;
         this.roomNumber = roomNumber;
+        this.capacity = capacity;
         this.rows = rows;
         this.columns = columns;
-        this.capacity = rows * columns;
     }
 
-    @PrePersist
-    @PreUpdate
-    public void calculateCapacity() {
-        this.capacity = rows * columns;
+    // Business rule method
+    public void ensureCapacityMatches() {
+        this.capacity = this.rows * this.columns;
     }
 
-    // Getters and Setters
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -46,15 +47,23 @@ public class ExamRoom {
     public String getRoomNumber() {
         return roomNumber;
     }
-
+    
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+    
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
     }
 
     public Integer getRows() {
         return rows;
     }
-
+    
     public void setRows(Integer rows) {
         this.rows = rows;
     }
@@ -62,16 +71,8 @@ public class ExamRoom {
     public Integer getColumns() {
         return columns;
     }
-
+    
     public void setColumns(Integer columns) {
         this.columns = columns;
-    }
-
-    public Integer getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
     }
 }
