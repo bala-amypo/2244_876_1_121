@@ -20,18 +20,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student addStudent(Student student) {
 
-        if (student.getRollNumber() == null || student.getName() == null) {
-            throw new ApiException("missing");
-        }
-
-        if (studentRepository.findByRollNumber(student.getRollNumber()).isPresent()) {
-            throw new ApiException("exists");
-        }
-
-        if (student.getYear() == null || student.getYear() < 1 || student.getYear() > 5) {
-            throw new ApiException("year");
-        }
-
         return studentRepository.save(student);
     }
 
