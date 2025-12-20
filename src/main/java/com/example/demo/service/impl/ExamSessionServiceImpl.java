@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.model.ExamSession;
+import com.example.demo.model.Student;
 import com.example.demo.repository.ExamSessionRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.service.ExamSessionService;
