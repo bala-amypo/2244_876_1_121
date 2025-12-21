@@ -1,7 +1,10 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "seating_plans")
@@ -11,16 +14,16 @@ public class SeatingPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "exam_session_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"students", "hibernateLazyInitializer", "handler"})
     private ExamSession examSession;
 
-    @ManyToOne
-    @JoinColumn(name = "exam_room_id")
-    private ExamRoom examRoom;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private ExamRoom room;
 
     @Column(columnDefinition = "TEXT")
-    private String seatAllocation;
+    private String arrangementJson;
 
     private LocalDateTime generatedAt;
 
@@ -28,7 +31,25 @@ public class SeatingPlan {
     public SeatingPlan() {
     }
 
+    // All-arg constructor
+    public SeatingPlan(Long id, ExamSession examSession, ExamRoom room,
+                       String arrangementJson, LocalDateTime generatedAt) {
+        this.id = id;
+        this.examSession = examSession;
+        this.room = room;
+        this.arrangementJson = arrangementJson;
+        this.generatedAt = generatedAt;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (generatedAt == null) {
+            generatedAt = LocalDateTime.now();
+        }
+    }
+
     // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -45,20 +66,20 @@ public class SeatingPlan {
         this.examSession = examSession;
     }
 
-    public ExamRoom getExamRoom() {
-        return examRoom;
+    public ExamRoom getRoom() {
+        return room;
     }
 
-    public void setExamRoom(ExamRoom examRoom) {
-        this.examRoom = examRoom;
+    public void setRoom(ExamRoom room) {
+        this.room = room;
     }
 
-    public String getSeatAllocation() {
-        return seatAllocation;
+    public String getArrangementJson() {
+        return arrangementJson;
     }
 
-    public void setSeatAllocation(String seatAllocation) {
-        this.seatAllocation = seatAllocation;
+    public void setArrangementJson(String arrangementJson) {
+        this.arrangementJson = arrangementJson;
     }
 
     public LocalDateTime getGeneratedAt() {
