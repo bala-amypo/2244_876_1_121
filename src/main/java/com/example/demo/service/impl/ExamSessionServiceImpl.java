@@ -1,51 +1,39 @@
 package com.example.demo.service.impl;
 
-import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.repository.ExamSessionRepository;
-import com.example.demo.repository.StudentRepository;
-import com.example.demo.service.ExamSessionService;
-import com.example.demo.model.ExamSession;
+import com.example.demo.model.ExamRoom;
+import com.example.demo.repository.ExamRoomRepository;
+import com.example.demo.service.ExamRoomService;
+
+import com.example.demo.exception.ApiException;
 
 @Service
-public class ExamSessionServiceImpl implements ExamSessionService {
+public class ExamRoomServiceImpl implements ExamRoomService{
 
-    private final ExamSessionRepository examSessionRepository;
-    private final StudentRepository studentRepository;
+    private final ExamRoomRepository examRoomRepository;
 
-    public ExamSessionServiceImpl(ExamSessionRepository examSessionRepository,
-                                  StudentRepository studentRepository) {
-        this.examSessionRepository = examSessionRepository;
-        this.studentRepository = studentRepository;
+    public ExamRoomServiceImpl(ExamRoomRepository examRoomRepository) {
+        this.examRoomRepository = examRoomRepository;
     }
 
     @Override
-    public ExamSession createSession(ExamSession session) {
-
-        // NULL checks to avoid 500 error
-        if (session == null) {
-            return null;
+    public ExamRoom addRoom(ExamRoom room){
+        if(room.getRows()<=0||room.getColumns()<=0){
+            throw new ApiException("invalid rows");
         }
-
-        if (session.getExamDate() == null) {
-            return null;
+        if(examRoomRepository.findByRoomNumber(room.getRoomNumber()).isPresent()){
+            throw new ApiException("exists");
         }
-
-        if (session.getExamDate().isBefore(LocalDate.now())) {
-            return null;
-        }
-
-        if (session.getStudents() == null || session.getStudents().isEmpty()) {
-            return null;
-        }
-
-        return examSessionRepository.save(session);
+        room.ensureCapacityMatches();
+        return examRoomRepository.save(room);
     }
 
     @Override
-    public ExamSession getSession(Long sessionId) {
-        return examSessionRepository.findById(sessionId).orElse(null);
+    public List<ExamRoom> getAllRooms(){
+        return examRoomRepository.findAll();
     }
+    
 }
