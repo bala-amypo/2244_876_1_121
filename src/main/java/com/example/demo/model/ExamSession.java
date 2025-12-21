@@ -2,7 +2,7 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "exam_sessions")
@@ -13,24 +13,18 @@ public class ExamSession {
     private Long id;
 
     private String courseCode;
-
     private LocalDate examDate;
+    private String examTime;
 
-    @ElementCollection
-    @CollectionTable(name = "exam_session_students",
-            joinColumns = @JoinColumn(name = "session_id"))
-    @Column(name = "student_name")
-    private List<String> students;
+    @ManyToMany
+    @JoinTable(
+        name = "session_student_mapping",
+        joinColumns = @JoinColumn(name = "session_id"),
+        inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    private Set<Student> students;
 
-    public ExamSession() {
-    }
-
-    public ExamSession(Long id, String courseCode, LocalDate examDate, List<String> students) {
-        this.id = id;
-        this.courseCode = courseCode;
-        this.examDate = examDate;
-        this.students = students;
-    }
+    public ExamSession() {}
 
     public Long getId() {
         return id;
@@ -44,7 +38,11 @@ public class ExamSession {
         return examDate;
     }
 
-    public List<String> getStudents() {
+    public String getExamTime() {
+        return examTime;
+    }
+
+    public Set<Student> getStudents() {
         return students;
     }
 
@@ -60,7 +58,11 @@ public class ExamSession {
         this.examDate = examDate;
     }
 
-    public void setStudents(List<String> students) {
+    public void setExamTime(String examTime) {
+        this.examTime = examTime;
+    }
+
+    public void setStudents(Set<Student> students) {
         this.students = students;
     }
 }
