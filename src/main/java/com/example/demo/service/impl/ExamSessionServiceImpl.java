@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -25,22 +26,10 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     @Override
     public ExamSession createSession(ExamSession session) {
 
-        // 🔴 VERY IMPORTANT NULL CHECKS (THIS REMOVES 500)
-        if (session == null) {
-            return null;
-        }
-
-        if (session.getExamDate() == null) {
-            return null;
-        }
-
-        if (session.getExamDate().isBefore(LocalDate.now())) {
-            return null;
-        }
-
-        if (session.getStudents() == null || session.getStudents().isEmpty()) {
-            return null;
-        }
+        if (session == null) return null;
+        if (session.getExamDate() == null) return null;
+        if (session.getExamDate().isBefore(LocalDate.now())) return null;
+        if (session.getStudents() == null || session.getStudents().isEmpty()) return null;
 
         return examSessionRepository.save(session);
     }
@@ -49,5 +38,11 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     public ExamSession getSession(Long sessionId) {
         Optional<ExamSession> sessionOpt = examSessionRepository.findById(sessionId);
         return sessionOpt.orElse(null);
+    }
+
+    // ✅ REQUIRED ONLY FOR COMPILATION
+    @Override
+    public List<ExamSession> getAllSessions() {
+        return examSessionRepository.findAll();
     }
 }
