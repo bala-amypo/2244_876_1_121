@@ -2,9 +2,10 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
-@Table(name = "exam_session")
+@Table(name = "exam_sessions")
 public class ExamSession {
 
     @Id
@@ -12,23 +13,37 @@ public class ExamSession {
     private Long id;
 
     private String courseCode;
+
     private LocalDate examDate;
+
+    @Column(name = "exam_session_time")
     private String examTime;
 
+    @ManyToMany
+    @JoinTable(
+        name = "session_student_mapping",
+        joinColumns = @JoinColumn(name = "session_id"),
+        inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    private Set<Student> students;
+
+    // No-arg constructor (required by JPA)
     public ExamSession() {
     }
 
-    public ExamSession(Long id, String courseCode, LocalDate examDate, String examTime) {
-        this.id = id;
+    // Parameterized constructor
+    public ExamSession(String courseCode, LocalDate examDate, String examTime, Set<Student> students) {
         this.courseCode = courseCode;
         this.examDate = examDate;
         this.examTime = examTime;
+        this.students = students;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
@@ -36,7 +51,7 @@ public class ExamSession {
     public String getCourseCode() {
         return courseCode;
     }
-
+    
     public void setCourseCode(String courseCode) {
         this.courseCode = courseCode;
     }
@@ -44,7 +59,7 @@ public class ExamSession {
     public LocalDate getExamDate() {
         return examDate;
     }
-
+    
     public void setExamDate(LocalDate examDate) {
         this.examDate = examDate;
     }
@@ -52,8 +67,16 @@ public class ExamSession {
     public String getExamTime() {
         return examTime;
     }
-
+    
     public void setExamTime(String examTime) {
         this.examTime = examTime;
+    }
+
+    public Set<Student> getStudents() {
+        return students;
+    }
+    
+    public void setStudents(Set<Student> students) {
+        this.students = students;
     }
 }
