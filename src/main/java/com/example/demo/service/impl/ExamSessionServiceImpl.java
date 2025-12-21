@@ -26,10 +26,10 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     @Override
     public ExamSession createSession(ExamSession session) {
 
+        // ✅ NULL SAFETY — prevents 500
         if (session == null) return null;
         if (session.getExamDate() == null) return null;
         if (session.getExamDate().isBefore(LocalDate.now())) return null;
-        if (session.getStudents() == null || session.getStudents().isEmpty()) return null;
 
         return examSessionRepository.save(session);
     }
@@ -40,7 +40,7 @@ public class ExamSessionServiceImpl implements ExamSessionService {
         return sessionOpt.orElse(null);
     }
 
-    // ✅ REQUIRED ONLY FOR COMPILATION
+    // ✅ Required because interface has it
     @Override
     public List<ExamSession> getAllSessions() {
         return examSessionRepository.findAll();

@@ -16,7 +16,6 @@ public class ExamSessionController {
         this.examSessionService = examSessionService;
     }
 
-    // POST /sessions – create exam session
     @PostMapping
     public ResponseEntity<?> createSession(@RequestBody ExamSession session) {
         ExamSession saved = examSessionService.createSession(session);
@@ -26,7 +25,6 @@ public class ExamSessionController {
         return ResponseEntity.ok(saved);
     }
 
-    // GET /sessions/{sessionId} – get session details
     @GetMapping("/{sessionId}")
     public ResponseEntity<?> getSession(@PathVariable Long sessionId) {
         ExamSession session = examSessionService.getSession(sessionId);
