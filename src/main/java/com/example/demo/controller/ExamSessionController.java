@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
-import jakarta.validation.Valid;
-
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,7 @@ import com.example.demo.service.ExamSessionService;
 
 @RestController
 @RequestMapping("/sessions")
-public class ExamSessionController{
+public class ExamSessionController {
 
     private final ExamSessionService examSessionService;
 
@@ -20,12 +19,25 @@ public class ExamSessionController{
     }
 
     @PostMapping
-    public ResponseEntity<ExamSession> createSession(@Valid @RequestBody ExamSession examSession){
-        return ResponseEntity.status(201).body(examSessionService.createSession(examSession));
+    public ResponseEntity<?> createSession(@RequestBody ExamSession session) {
+        ExamSession saved = examSessionService.createSession(session);
+        if (saved == null) {
+            return ResponseEntity.badRequest().body("Invalid exam session data");
+        }
+        return ResponseEntity.ok(saved);
     }
 
-    @GetMapping("/{sessionId}")
-    public ResponseEntity<ExamSession> getSession(@PathVariable Long sessionId){
-        return ResponseEntity.status(200).body(examSessionService.getSession(sessionId));
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getSession(@PathVariable Long id) {
+        ExamSession session = examSessionService.getSession(id);
+        if (session == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(session);
+    }
+
+    @GetMapping
+    public List<ExamSession> getAllSessions() {
+        return examSessionService.getAllSessions();
     }
 }
