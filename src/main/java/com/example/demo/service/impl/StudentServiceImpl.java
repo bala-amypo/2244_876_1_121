@@ -10,7 +10,7 @@ import com.example.demo.service.StudentService;
 import com.example.demo.model.ExamRoom; 
 import com.example.demo.model.Student;
 import com.example.demo.repository.StudentRepository;
-
+import com.example.demo.exception.ApiException;
 import com.example.demo.model.Student;
 
 @Service
@@ -23,7 +23,7 @@ public class StudentServiceImpl implements StudentService{
     }
     
     public Student addStudent(Student student){
-       
+        
         return studentRepository.save(student);
     }
 
