@@ -1,39 +1,41 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.model.ExamRoom;
-import com.example.demo.repository.ExamRoomRepository;
-import com.example.demo.service.ExamRoomService;
-
-import com.example.demo.exception.ApiException;
+import com.example.demo.model.ExamSession;
+import com.example.demo.repository.ExamSessionRepository;
+import com.example.demo.repository.StudentRepository;
+import com.example.demo.service.ExamSessionService;
 
 @Service
-public class ExamRoomServiceImpl implements ExamRoomService{
+public class ExamSessionServiceImpl implements ExamSessionService {
 
-    private final ExamRoomRepository examRoomRepository;
+    private final ExamSessionRepository examSessionRepository;
+    private final StudentRepository studentRepository;
 
-    public ExamRoomServiceImpl(ExamRoomRepository examRoomRepository) {
-        this.examRoomRepository = examRoomRepository;
+    public ExamSessionServiceImpl(ExamSessionRepository examSessionRepository,
+                                  StudentRepository studentRepository) {
+        this.examSessionRepository = examSessionRepository;
+        this.studentRepository = studentRepository;
     }
 
     @Override
-    public ExamRoom addRoom(ExamRoom room){
-        if(room.getRows()<=0||room.getColumns()<=0){
-            throw new ApiException("invalid rows");
+    public ExamSession createSession(ExamSession session) {
+        if (session.getExamDate() == null || session.getExamDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Exam date cannot be null or in the past.");
         }
-        if(examRoomRepository.findByRoomNumber(room.getRoomNumber()).isPresent()){
-            throw new ApiException("exists");
+        if (session.getStudents() == null || session.getStudents().isEmpty()) {
+            throw new IllegalArgumentException("Exam session must have at least one student.");
         }
-        room.ensureCapacityMatches();
-        return examRoomRepository.save(room);
+        return examSessionRepository.save(session);
     }
 
     @Override
-    public List<ExamRoom> getAllRooms(){
-        return examRoomRepository.findAll();
+    public ExamSession getSession(Long sessionId) {
+        Optional<ExamSession> session = examSessionRepository.findById(sessionId);
+        return session.orElseThrow(() -> new IllegalArgumentException("Session not found with id: " + sessionId));
     }
-    
 }
