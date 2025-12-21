@@ -59,10 +59,14 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
         Map<String, String> seatingMap = new LinkedHashMap<>();
         int seatIndex = 1;
 
-        for (Student student : session.getStudents()) {
-            seatingMap.put("Seat-" + seatIndex, student.getRollNumber());
-            seatIndex++;
-        }
+   Set<Student> students = session.getStudents();
+
+    if (students != null) {
+      for (Student student : students) {
+        seatingMap.put("Seat-" + seatIndex, student.getRollNumber());
+        seatIndex++;
+      }
+    }
 
         try {
             ObjectMapper mapper = new ObjectMapper();
