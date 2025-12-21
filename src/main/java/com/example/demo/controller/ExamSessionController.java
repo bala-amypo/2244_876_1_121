@@ -29,4 +29,3 @@ public class ExamSessionController{
         return ResponseEntity.status(200).body(examSessionService.getSession(sessionId));
     }
 }
-
