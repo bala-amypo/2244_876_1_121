@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import jakarta.validation.Valid;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,7 +11,7 @@ import com.example.demo.service.ExamSessionService;
 
 @RestController
 @RequestMapping("/sessions")
-public class ExamSessionController {
+public class ExamSessionController{
 
     private final ExamSessionService examSessionService;
 
@@ -17,20 +20,13 @@ public class ExamSessionController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createSession(@RequestBody ExamSession session) {
-        ExamSession saved = examSessionService.createSession(session);
-        if (saved == null) {
-            return ResponseEntity.badRequest().body("Invalid exam session data");
-        }
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<ExamSession> createSession(@Valid @RequestBody ExamSession examSession){
+        return ResponseEntity.status(201).body(examSessionService.createSession(examSession));
     }
 
     @GetMapping("/{sessionId}")
-    public ResponseEntity<?> getSession(@PathVariable Long sessionId) {
-        ExamSession session = examSessionService.getSession(sessionId);
-        if (session == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(session);
+    public ResponseEntity<ExamSession> getSession(@PathVariable Long sessionId){
+        return ResponseEntity.status(200).body(examSessionService.getSession(sessionId));
     }
 }
+
