@@ -2,12 +2,12 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+
 import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
-@Table(name = "exam_sessions")
+@Table(name = "Exam_session")
 @Getter
 @Setter
 @Builder
