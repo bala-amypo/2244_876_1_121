@@ -10,36 +10,41 @@ public class ExamRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String roomNumber;
 
-    private Integer capacity;
+    @Column(name = "room_rows")
     private Integer rows;
+
+    @Column(name = "room_columns")
     private Integer columns;
 
-    // No-arg constructor
+    private Integer capacity;
+
+    // No-arg constructor (required by JPA)
     public ExamRoom() {
     }
 
-    // All-args constructor
-    public ExamRoom(Long id, String roomNumber, Integer capacity, Integer rows, Integer columns) {
-        this.id = id;
+    // Parameterized constructor
+    public ExamRoom(String roomNumber, Integer rows, Integer columns) {
         this.roomNumber = roomNumber;
-        this.capacity = capacity;
         this.rows = rows;
         this.columns = columns;
+        ensureCapacityMatches();
     }
 
-    // Business rule method
+    // Business logic
     public void ensureCapacityMatches() {
-        this.capacity = this.rows * this.columns;
+        if (this.rows != null && this.columns != null) {
+            this.capacity = this.rows * this.columns;
+        }
     }
 
-    // Getters & Setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
@@ -52,20 +57,13 @@ public class ExamRoom {
         this.roomNumber = roomNumber;
     }
 
-    public Integer getCapacity() {
-        return capacity;
-    }
-    
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
-    }
-
     public Integer getRows() {
         return rows;
     }
     
     public void setRows(Integer rows) {
         this.rows = rows;
+        ensureCapacityMatches();
     }
 
     public Integer getColumns() {
@@ -74,5 +72,14 @@ public class ExamRoom {
     
     public void setColumns(Integer columns) {
         this.columns = columns;
+        ensureCapacityMatches();
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+    
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
     }
 }

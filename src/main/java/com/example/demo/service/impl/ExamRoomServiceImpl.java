@@ -1,15 +1,17 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ApiException;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.example.demo.model.ExamRoom;
 import com.example.demo.repository.ExamRoomRepository;
 import com.example.demo.service.ExamRoomService;
 
-import org.springframework.stereotype.Service;
-import java.util.List;
+import com.example.demo.exception.ApiException;
 
 @Service
-public class ExamRoomServiceImpl implements ExamRoomService {
+public class ExamRoomServiceImpl implements ExamRoomService{
 
     private final ExamRoomRepository examRoomRepository;
 
@@ -18,16 +20,15 @@ public class ExamRoomServiceImpl implements ExamRoomService {
     }
 
     @Override
-    public ExamRoom addRoom(ExamRoom room) {
-
+    public ExamRoom addRoom(ExamRoom room){
         
-
         room.ensureCapacityMatches();
         return examRoomRepository.save(room);
     }
 
     @Override
-    public List<ExamRoom> getAllRooms() {
+    public List<ExamRoom> getAllRooms(){
         return examRoomRepository.findAll();
     }
+    
 }
