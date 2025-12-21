@@ -1,14 +1,18 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
+import jakarta.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import com.example.demo.model.Student;
 import com.example.demo.service.StudentService;
 
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-
 @RestController
 @RequestMapping("/students")
-public class StudentController {
+public class StudentController{
 
     private final StudentService studentService;
 
@@ -17,12 +21,12 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student addStudent(@RequestBody Student student) {
-        return studentService.addStudent(student);
+    public ResponseEntity<Student>add(@Valid @RequestBody Student student){
+        return ResponseEntity.status(201).body(studentService.addStudent(student));
     }
 
     @GetMapping
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    public ResponseEntity<List<Student>> list(){
+        return ResponseEntity.status(200).body(studentService.getAllStudents());
     }
 }

@@ -17,24 +17,23 @@ public class Student {
     private String department;
     private Integer year;
 
-    // No-arg constructor
+    // No-arg constructor (required by JPA)
     public Student() {
     }
 
-    // All-args constructor
-    public Student(Long id, String rollNumber, String name, String department, Integer year) {
-        this.id = id;
+    // Parameterized constructor
+    public Student(String rollNumber, String name, String department, Integer year) {
         this.rollNumber = rollNumber;
         this.name = name;
         this.department = department;
         this.year = year;
     }
 
-    // Getters & Setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
@@ -42,7 +41,7 @@ public class Student {
     public String getRollNumber() {
         return rollNumber;
     }
-
+    
     public void setRollNumber(String rollNumber) {
         this.rollNumber = rollNumber;
     }
@@ -50,7 +49,7 @@ public class Student {
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
