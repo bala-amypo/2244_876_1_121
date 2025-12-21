@@ -15,7 +15,8 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     private final ExamSessionRepository examSessionRepository;
     private final StudentRepository studentRepository;
 
-    public ExamSessionServiceImpl(ExamSessionRepository examSessionRepository, StudentRepository studentRepository) {
+    public ExamSessionServiceImpl(ExamSessionRepository examSessionRepository,
+                                  StudentRepository studentRepository) {
         this.examSessionRepository = examSessionRepository;
         this.studentRepository = studentRepository;
     }
@@ -23,8 +24,16 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     @Override
     public ExamSession createSession(ExamSession session) {
 
-        if (session.getExamDate() != null &&
-            session.getExamDate().isBefore(LocalDate.now())) {
+        // NULL checks to avoid 500 error
+        if (session == null) {
+            return null;
+        }
+
+        if (session.getExamDate() == null) {
+            return null;
+        }
+
+        if (session.getExamDate().isBefore(LocalDate.now())) {
             return null;
         }
 
