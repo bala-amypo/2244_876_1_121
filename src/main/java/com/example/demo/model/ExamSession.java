@@ -1,19 +1,13 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-
 import java.time.LocalDate;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+
 @Entity
 @Table(name = "exam_sessions")
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ExamSession {
 
     @Id
@@ -27,8 +21,7 @@ public class ExamSession {
     @Column(name = "exam_session_time")
     private String examTime;
 
-    // ✅ IMPORTANT: NO cascade here
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
         name = "session_student_mapping",
         joinColumns = @JoinColumn(name = "session_id"),
@@ -36,4 +29,46 @@ public class ExamSession {
     )
     @JsonIgnoreProperties("sessions")
     private Set<Student> students;
+
+    // -------- getters & setters --------
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public LocalDate getExamDate() {
+        return examDate;
+    }
+
+    public void setExamDate(LocalDate examDate) {
+        this.examDate = examDate;
+    }
+
+    public String getExamTime() {
+        return examTime;
+    }
+
+    public void setExamTime(String examTime) {
+        this.examTime = examTime;
+    }
+
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<Student> students) {
+        this.students = students;
+    }
 }
