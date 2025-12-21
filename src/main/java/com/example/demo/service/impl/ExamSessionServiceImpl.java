@@ -1,14 +1,13 @@
 package com.example.demo.service.impl;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.model.ExamSession;
 import com.example.demo.repository.ExamSessionRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.service.ExamSessionService;
+import com.example.demo.model.ExamSession;
 
 @Service
 public class ExamSessionServiceImpl implements ExamSessionService {
@@ -25,16 +24,14 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     @Override
     public ExamSession createSession(ExamSession session) {
 
-        if (session == null)
-            return null;
-
         if (session.getExamDate() == null ||
-            session.getExamDate().isBefore(LocalDate.now()))
+            session.getExamDate().isBefore(LocalDate.now())) {
             return null;
+        }
 
-        if (session.getStudents() == null ||
-            session.getStudents().isEmpty())
+        if (session.getStudents() == null || session.getStudents().isEmpty()) {
             return null;
+        }
 
         return examSessionRepository.save(session);
     }
@@ -42,10 +39,5 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     @Override
     public ExamSession getSession(Long sessionId) {
         return examSessionRepository.findById(sessionId).orElse(null);
-    }
-
-    @Override
-    public List<ExamSession> getAllSessions() {
-        return examSessionRepository.findAll();
     }
 }
