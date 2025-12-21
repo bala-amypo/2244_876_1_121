@@ -1,74 +1,29 @@
-package com.example.demo.model;
+package com.example.demo.controller;
 
-import java.time.LocalDate;
-import java.util.Set;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+import com.example.demo.model.ExamSession;
+import com.example.demo.service.ExamSessionService;
 
-@Entity
-@Table(name = "exam_sessions")
-public class ExamSession {
+@RestController
+@RequestMapping("/sessions")
+public class ExamSessionController {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final ExamSessionService examSessionService;
 
-    private String courseCode;
-
-    private LocalDate examDate;
-
-    @Column(name = "exam_session_time")
-    private String examTime;
-
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(
-        name = "session_student_mapping",
-        joinColumns = @JoinColumn(name = "session_id"),
-        inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
-    @JsonIgnoreProperties("sessions")
-    private Set<Student> students;
-
-    // -------- getters & setters --------
-
-    public Long getId() {
-        return id;
+    public ExamSessionController(ExamSessionService examSessionService) {
+        this.examSessionService = examSessionService;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @PostMapping
+    public ResponseEntity<ExamSession> createSession(@RequestBody ExamSession session) {
+        return ResponseEntity.status(201)
+                .body(examSessionService.createSession(session));
     }
 
-    public String getCourseCode() {
-        return courseCode;
-    }
-
-    public void setCourseCode(String courseCode) {
-        this.courseCode = courseCode;
-    }
-
-    public LocalDate getExamDate() {
-        return examDate;
-    }
-
-    public void setExamDate(LocalDate examDate) {
-        this.examDate = examDate;
-    }
-
-    public String getExamTime() {
-        return examTime;
-    }
-
-    public void setExamTime(String examTime) {
-        this.examTime = examTime;
-    }
-
-    public Set<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(Set<Student> students) {
-        this.students = students;
+    @GetMapping("/{id}")
+    public ResponseEntity<ExamSession> getSession(@PathVariable Long id) {
+        return ResponseEntity.ok(examSessionService.getSession(id));
     }
 }
