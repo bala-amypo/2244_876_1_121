@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/seating-plans")
+@RequestMapping("/plans")
 public class SeatingPlanController {
 
     private final SeatingPlanService seatingPlanService;
@@ -17,18 +17,18 @@ public class SeatingPlanController {
         this.seatingPlanService = seatingPlanService;
     }
 
-    @PostMapping("/generate/{sessionId}")
-    public SeatingPlan generate(@PathVariable Long sessionId) {
-        return seatingPlanService.generatePlan(sessionId);
-    }
-
-    @GetMapping("/{id}")
-    public SeatingPlan get(@PathVariable Long id) {
-        return seatingPlanService.getPlan(id);
+    @PostMapping("/{sessionId}")
+    public ResponseEntity<SeatingPlan> generate(@PathVariable Long sessionId) {
+        return ResponseEntity.ok(seatingPlanService.generatePlan(sessionId));
     }
 
     @GetMapping("/session/{sessionId}")
-    public List<SeatingPlan> list(@PathVariable Long sessionId) {
-        return seatingPlanService.getPlansBySession(sessionId);
+    public ResponseEntity<List<SeatingPlan>> getBySession(@PathVariable Long sessionId) {
+        return ResponseEntity.ok(seatingPlanService.getPlansBySession(sessionId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SeatingPlan> get(@PathVariable Long id) {
+        return ResponseEntity.ok(seatingPlanService.getById(id));
     }
 }

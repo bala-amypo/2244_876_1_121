@@ -13,6 +13,7 @@ public class AuthController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
+    // EXACT constructor expected by tests
     public AuthController(UserService userService,
                           JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;

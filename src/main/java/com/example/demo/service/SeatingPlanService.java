@@ -7,7 +7,7 @@ public interface SeatingPlanService {
 
     SeatingPlan generatePlan(Long examSessionId);
 
-    SeatingPlan getPlan(Long id);
+    List<SeatingPlan> getPlansBySession(Long examSessionId);
 
-    List<SeatingPlan> getPlansBySession(Long sessionId);
+    SeatingPlan getById(Long id);
 }

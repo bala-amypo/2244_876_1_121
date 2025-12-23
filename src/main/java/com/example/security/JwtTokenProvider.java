@@ -13,51 +13,75 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private String secret = "secret-key-secret-key-secret-key";
-    private long expiration = 86400000; // 1 day
+    private long expiration = 86400000;
 
-    // ❌ NOT final anymore
     private Key key;
 
-    // ✅ DEFAULT CONSTRUCTOR (tests expect this)
+    // REQUIRED BY SPRING + TESTS
     public JwtTokenProvider() {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // ✅ CONSTRUCTOR USED BY TESTS
+    // REQUIRED BY TESTS
     public JwtTokenProvider(String secret, int expiration) {
         this.secret = secret;
         this.expiration = expiration;
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // ✅ GENERATE TOKEN
+    // ===== TOKEN GENERATION =====
+
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("role", "USER")
+                .claim("userId", 0L)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // ✅ REQUIRED BY JwtAuthenticationFilter
-    public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.getSubject();
+    // REQUIRED BY TESTS
+    public String generateToken(Long userId, String email, String role) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("role", role)
+                .claim("userId", userId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    // ✅ REQUIRED BY TESTS
+    // ===== TOKEN READERS =====
+
+    public String getEmailFromToken(String token) {
+        return getAllClaims(token).getSubject();
+    }
+
+    public String getRoleFromToken(String token) {
+        return getAllClaims(token).get("role", String.class);
+    }
+
+    public Long getUserIdFromToken(String token) {
+        return getAllClaims(token).get("userId", Long.class);
+    }
+
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            getAllClaims(token);
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private Claims getAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
