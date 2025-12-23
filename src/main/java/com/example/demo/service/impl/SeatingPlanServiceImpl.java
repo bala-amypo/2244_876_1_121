@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 
 import org.springframework.stereotype.Service;
-
+import com.example.demo.exception.ApiException;
 import com.example.demo.model.ExamSession;
 import com.example.demo.model.SeatingPlan;
 import com.example.demo.model.ExamRoom; 
@@ -21,13 +21,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class SeatingPlanServiceImpl implements SeatingPlanService {
 
+    // These are the names you defined
     private final ExamSessionRepository examSessionRepository;
     private final SeatingPlanRepository seatingPlanRepository;
     private final ExamRoomRepository examRoomRepository;
 
-    public SeatingPlanServiceImpl(ExamSessionRepository s,
-                                  SeatingPlanRepository p,
-                                  ExamRoomRepository r) {
+    public SeatingPlanServiceImpl(ExamSessionRepository s, SeatingPlanRepository p, ExamRoomRepository r) {
         this.examSessionRepository = s;
         this.seatingPlanRepository = p;
         this.examRoomRepository = r;
@@ -35,10 +34,11 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
 
     @Override
     public SeatingPlan generatePlan(Long sessionId) {
-
+        
+        
         Optional<ExamSession> sessionOpt = examSessionRepository.findById(sessionId);
         if (!sessionOpt.isPresent()) {
-            return null;
+            throw new ApiException("session not found");
         }
 
         ExamSession session = sessionOpt.get();
@@ -50,12 +50,12 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
         for (ExamRoom room : rooms) {
             if (room.getCapacity() >= studentCount) {
                 selectedRoom = room;
-                break;
+                break; 
             }
         }
 
         if (selectedRoom == null) {
-            return null;
+            throw new ApiException("no room");
         }
 
         Map<String, String> seatingMap = new LinkedHashMap<>();
@@ -77,13 +77,14 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
             return seatingPlanRepository.save(plan);
 
         } catch (Exception e) {
-            return null;
+            throw new ApiException("json error");
         }
     }
 
     @Override
     public SeatingPlan getPlan(Long planId) {
-        return seatingPlanRepository.findById(planId).orElse(null);
+        return seatingPlanRepository.findById(planId)
+                .orElseThrow(() -> new ApiException("plan not found"));
     }
 
     @Override

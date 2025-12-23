@@ -2,34 +2,40 @@ package com.example.demo.service.impl;
 
 import java.time.LocalDate;
 
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.repository.ExamSessionRepository;
+import com.example.demo.repository.StudentRepository;
 import com.example.demo.service.ExamSessionService;
+
+import com.example.demo.exception.ApiException;
+
 import com.example.demo.model.ExamSession;
 
+
 @Service
-public class ExamSessionServiceImpl implements ExamSessionService {
+public class ExamSessionServiceImpl implements ExamSessionService{
 
     private final ExamSessionRepository examSessionRepository;
+    private final StudentRepository studentRepository;
 
-    public ExamSessionServiceImpl(ExamSessionRepository examSessionRepository) {
+    public ExamSessionServiceImpl(ExamSessionRepository examSessionRepository, StudentRepository studentRepository) {
         this.examSessionRepository = examSessionRepository;
+        this.studentRepository = studentRepository;
     }
 
-    @Override
-    public ExamSession createSession(ExamSession session) {
-        // Validate exam session data to avoid 500
-        if (session.getExamDate() == null) return null;
-        if (session.getExamDate().isBefore(LocalDate.now())) return null;
-        if (session.getStudents() == null || session.getStudents().isEmpty()) return null;
+    public ExamSession createSession(ExamSession session){
+        if (session.getExamDate().isBefore(LocalDate.now()))
+            throw new ApiException("past");
 
-        // Save session only if valid
+        if (session.getStudents() == null || session.getStudents().isEmpty())
+            throw new ApiException("at least 1 student");
         return examSessionRepository.save(session);
     }
 
-    @Override
-    public ExamSession getSession(Long sessionId) {
-        return examSessionRepository.findById(sessionId).orElse(null);
+    public ExamSession getSession(Long sessionId){
+        return examSessionRepository.findById(sessionId).orElseThrow(()->new ApiException("Session not found"));
     }
+    
 }
