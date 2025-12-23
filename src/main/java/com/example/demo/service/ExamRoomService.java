@@ -4,7 +4,12 @@ import java.util.List;
 
 import com.example.demo.model.ExamRoom;
 
-public interface ExamRoomService{
+public interface ExamRoomService {
+
     ExamRoom addRoom(ExamRoom room);
+
     List<ExamRoom> getAllRooms();
+
+    // REQUIRED BY TESTS
+    ExamRoom getById(Long id);
 }
