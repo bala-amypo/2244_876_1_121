@@ -17,6 +17,10 @@ public class SeatingPlan {
     @JoinColumn(name = "exam_session_id")
     private ExamSession examSession;
 
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ExamRoom room;
+
     public SeatingPlan() {}
 
     // ===== GETTERS =====
@@ -32,6 +36,10 @@ public class SeatingPlan {
         return examSession;
     }
 
+    public ExamRoom getRoom() {
+        return room;
+    }
+
     // ===== SETTERS =====
     public void setId(Long id) {
         this.id = id;
@@ -43,5 +51,9 @@ public class SeatingPlan {
 
     public void setExamSession(ExamSession examSession) {
         this.examSession = examSession;
+    }
+
+    public void setRoom(ExamRoom room) {
+        this.room = room;
     }
 }
