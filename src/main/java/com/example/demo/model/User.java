@@ -1,82 +1,62 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    private String name;
-
-    @Email
-    @NotBlank
-    @Column(unique = true)
     private String email;
-
-    @NotBlank
     private String password;
-
     private String role;
 
-    // ---------------- Constructors ----------------
+    public User() {}
 
-    public User() {
-        this.role = "STAFF"; // default value
-    }
-
-    public User(Long id, String name, String email, String password, String role) {
+    public User(Long id, String email, String password, String role) {
         this.id = id;
-        this.name = name;
         this.email = email;
         this.password = password;
-        this.role = (role != null) ? role : "STAFF"; // default if null
+        this.role = role;
     }
 
-    // ---------------- Getters and Setters ----------------
+    // getters & setters
 
-    public Long getId() {
-        return id;
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public static class Builder {
+        private Long id;
+        private String email;
+        private String password;
+        private String role;
 
-    public String getName() {
-        return name;
-    }
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
 
-    public String getEmail() {
-        return email;
-    }
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+        public Builder role(String role) {
+            this.role = role;
+            return this;
+        }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = (role != null) ? role : "STAFF";
+        public User build() {
+            return new User(id, email, password, role);
+        }
     }
 }

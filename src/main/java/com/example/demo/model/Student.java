@@ -3,71 +3,43 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "students")
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String rollNumber;
-
     private String name;
-    private String department;
-    private Integer year;
 
-    // No-arg constructor
-    public Student() {
-    }
+    public Student() {}
 
-    // All-arg constructor
-    public Student(Long id, String rollNumber, String name, String department, Integer year) {
+    public Student(Long id, String name) {
         this.id = id;
-        this.rollNumber = rollNumber;
-        this.name = name;
-        this.department = department;
-        this.year = year;
-    }
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRollNumber() {
-        return rollNumber;
-    }
-
-    public void setRollNumber(String rollNumber) {
-        this.rollNumber = rollNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 
-    public String getDepartment() {
-        return department;
+    // getters & setters
+
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
-    }
+    public static class Builder {
+        private Long id;
+        private String name;
 
-    public Integer getYear() {
-        return year;
-    }
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
-    public void setYear(Integer year) {
-        this.year = year;
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Student build() {
+            return new Student(id, name);
+        }
     }
 }

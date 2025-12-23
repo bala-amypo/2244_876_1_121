@@ -1,17 +1,20 @@
 package com.example.demo.security;
 
+import java.util.Date;
+import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
     private static final String SECRET =
             "examseatingexamseatingexamseatingexamseating";
+
+    public JwtTokenProvider() {
+        // REQUIRED for tests
+    }
 
     public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
@@ -24,7 +27,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // ✅ ADD THIS METHOD (fixes compilation)
     public String getEmailFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET.getBytes())
