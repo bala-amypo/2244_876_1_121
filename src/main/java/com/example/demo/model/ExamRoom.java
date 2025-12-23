@@ -6,48 +6,51 @@ import jakarta.persistence.*;
 public class ExamRoom {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String roomName;
-    private int capacity;
+    private String roomNumber;
+    private Integer rows;
+    private Integer columns;
+    private Integer capacity;
 
     public ExamRoom() {}
 
-    public ExamRoom(Long id, String roomName, int capacity) {
+    public ExamRoom(Long id, String roomNumber, Integer rows, Integer columns) {
         this.id = id;
-        this.roomName = roomName;
-        this.capacity = capacity;
+        this.roomNumber = roomNumber;
+        this.rows = rows;
+        this.columns = columns;
+        ensureCapacityMatches();
     }
 
-    // getters & setters
-
-    public static Builder builder() {
-        return new Builder();
+    public void ensureCapacityMatches() {
+        if (rows != null && columns != null) {
+            this.capacity = rows * columns;
+        }
     }
+
+    public Long getId() { return id; }
+    public String getRoomNumber() { return roomNumber; }
+    public Integer getRows() { return rows; }
+    public Integer getColumns() { return columns; }
+    public Integer getCapacity() { return capacity; }
+
+    public static Builder builder() { return new Builder(); }
 
     public static class Builder {
         private Long id;
-        private String roomName;
-        private int capacity;
+        private String roomNumber;
+        private Integer rows;
+        private Integer columns;
 
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder roomName(String roomName) {
-            this.roomName = roomName;
-            return this;
-        }
-
-        public Builder capacity(int capacity) {
-            this.capacity = capacity;
-            return this;
-        }
+        public Builder id(Long id) { this.id = id; return this; }
+        public Builder roomNumber(String roomNumber) { this.roomNumber = roomNumber; return this; }
+        public Builder rows(Integer rows) { this.rows = rows; return this; }
+        public Builder columns(Integer columns) { this.columns = columns; return this; }
 
         public ExamRoom build() {
-            return new ExamRoom(id, roomName, capacity);
+            return new ExamRoom(id, roomNumber, rows, columns);
         }
     }
 }

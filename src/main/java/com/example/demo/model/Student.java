@@ -6,40 +6,42 @@ import jakarta.persistence.*;
 public class Student {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String rollNumber;
+    private Integer year;
 
     public Student() {}
 
-    public Student(Long id, String name) {
+    public Student(Long id, String rollNumber, Integer year) {
         this.id = id;
-        this.name = name;
+        this.rollNumber = rollNumber;
+        this.year = year;
     }
 
-    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    public String getRollNumber() { return rollNumber; }
+    public void setRollNumber(String rollNumber) { this.rollNumber = rollNumber; }
+
+    public Integer getYear() { return year; }
+    public void setYear(Integer year) { this.year = year; }
+
+    public static Builder builder() { return new Builder(); }
 
     public static class Builder {
         private Long id;
-        private String name;
+        private String rollNumber;
+        private Integer year;
 
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
+        public Builder id(Long id) { this.id = id; return this; }
+        public Builder rollNumber(String rollNumber) { this.rollNumber = rollNumber; return this; }
+        public Builder year(Integer year) { this.year = year; return this; }
 
         public Student build() {
-            return new Student(id, name);
+            return new Student(id, rollNumber, year);
         }
     }
 }
