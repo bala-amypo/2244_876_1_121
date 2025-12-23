@@ -17,18 +17,18 @@ public class SeatingPlanController {
         this.seatingPlanService = seatingPlanService;
     }
 
-    // 🔥 REQUIRED BY TESTS
+    // 🔥 USED BY TESTS
     public SeatingPlan add(SeatingPlan plan) {
-        return seatingPlanService.create(plan);
+        return seatingPlanService.save(plan);
     }
 
-    // 🔥 REQUIRED BY TESTS
+    // 🔥 USED BY TESTS
     public List<SeatingPlan> list() {
-        return seatingPlanService.getAll();
+        return seatingPlanService.findAll();
     }
 
-    // 🔥 REQUIRED BY TESTS
-    public SeatingPlan add(Long id) {
-        return seatingPlanService.getById(id);
+    // 🔥 USED BY TESTS
+    public SeatingPlan get(Long id) {
+        return seatingPlanService.findById(id);
     }
 }
