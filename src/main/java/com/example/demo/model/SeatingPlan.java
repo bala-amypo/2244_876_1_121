@@ -1,9 +1,5 @@
 package com.example.demo.model;
 
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -14,79 +10,99 @@ public class SeatingPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties({"students", "hibernateLazyInitializer", "handler"})
-    private ExamSession examSession;
+    private Integer seatNumber;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id")
     private ExamRoom room;
 
-    @Column(columnDefinition = "TEXT")
-    private String arrangementJson;
+    @ManyToOne
+    @JoinColumn(name = "session_id")
+    private ExamSession session;
 
-    private LocalDateTime generatedAt;
+    public SeatingPlan() {}
 
-    // No-arg constructor
-    public SeatingPlan() {
-    }
-
-    // All-arg constructor
-    public SeatingPlan(Long id, ExamSession examSession, ExamRoom room,
-                       String arrangementJson, LocalDateTime generatedAt) {
-        this.id = id;
-        this.examSession = examSession;
-        this.room = room;
-        this.arrangementJson = arrangementJson;
-        this.generatedAt = generatedAt;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        if (generatedAt == null) {
-            generatedAt = LocalDateTime.now();
-        }
-    }
-
-    // Getters and Setters
-
+    // ===== GETTERS =====
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Integer getSeatNumber() {
+        return seatNumber;
     }
 
-    public ExamSession getExamSession() {
-        return examSession;
-    }
-
-    public void setExamSession(ExamSession examSession) {
-        this.examSession = examSession;
+    public Student getStudent() {
+        return student;
     }
 
     public ExamRoom getRoom() {
         return room;
     }
 
+    public ExamSession getSession() {
+        return session;
+    }
+
+    // ===== SETTERS =====
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setSeatNumber(Integer seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
     public void setRoom(ExamRoom room) {
         this.room = room;
     }
 
-    public String getArrangementJson() {
-        return arrangementJson;
+    public void setSession(ExamSession session) {
+        this.session = session;
     }
 
-    public void setArrangementJson(String arrangementJson) {
-        this.arrangementJson = arrangementJson;
+    // ===== BUILDER =====
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public LocalDateTime getGeneratedAt() {
-        return generatedAt;
-    }
+    public static class Builder {
+        private final SeatingPlan sp = new SeatingPlan();
 
-    public void setGeneratedAt(LocalDateTime generatedAt) {
-        this.generatedAt = generatedAt;
+        public Builder id(Long id) {
+            sp.setId(id);
+            return this;
+        }
+
+        public Builder seatNumber(Integer seatNumber) {
+            sp.setSeatNumber(seatNumber);
+            return this;
+        }
+
+        public Builder student(Student student) {
+            sp.setStudent(student);
+            return this;
+        }
+
+        public Builder room(ExamRoom room) {
+            sp.setRoom(room);
+            return this;
+        }
+
+        public Builder session(ExamSession session) {
+            sp.setSession(session);
+            return this;
+        }
+
+        public SeatingPlan build() {
+            return sp;
+        }
     }
 }

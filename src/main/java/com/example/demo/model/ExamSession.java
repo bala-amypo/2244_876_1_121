@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
+@Table(name = "exam_sessions")
 public class ExamSession {
 
     @Id
@@ -20,48 +21,55 @@ public class ExamSession {
 
     public ExamSession() {}
 
-    public ExamSession(Long id, String courseCode, LocalDate examDate, String examTime, Set<Student> students) {
-        this.id = id;
-        this.courseCode = courseCode;
-        this.examDate = examDate;
-        this.examTime = examTime;
-        this.students = students;
-    }
-
-    // getters & setters
+    // ===== GETTERS =====
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public String getCourseCode() { return courseCode; }
-    public void setCourseCode(String courseCode) { this.courseCode = courseCode; }
-
     public LocalDate getExamDate() { return examDate; }
-    public void setExamDate(LocalDate examDate) { this.examDate = examDate; }
-
     public String getExamTime() { return examTime; }
-    public void setExamTime(String examTime) { this.examTime = examTime; }
-
     public Set<Student> getStudents() { return students; }
+
+    // ===== SETTERS =====
+    public void setId(Long id) { this.id = id; }
+    public void setCourseCode(String courseCode) { this.courseCode = courseCode; }
+    public void setExamDate(LocalDate examDate) { this.examDate = examDate; }
+    public void setExamTime(String examTime) { this.examTime = examTime; }
     public void setStudents(Set<Student> students) { this.students = students; }
 
-    // builder
-    public static Builder builder() { return new Builder(); }
+    // ===== BUILDER =====
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static class Builder {
-        private Long id;
-        private String courseCode;
-        private LocalDate examDate;
-        private String examTime;
-        private Set<Student> students;
+        private final ExamSession s = new ExamSession();
 
-        public Builder id(Long id) { this.id = id; return this; }
-        public Builder courseCode(String courseCode) { this.courseCode = courseCode; return this; }
-        public Builder examDate(LocalDate examDate) { this.examDate = examDate; return this; }
-        public Builder examTime(String examTime) { this.examTime = examTime; return this; }
-        public Builder students(Set<Student> students) { this.students = students; return this; }
+        public Builder id(Long id) {
+            s.setId(id);
+            return this;
+        }
+
+        public Builder courseCode(String courseCode) {
+            s.setCourseCode(courseCode);
+            return this;
+        }
+
+        public Builder examDate(LocalDate examDate) {
+            s.setExamDate(examDate);
+            return this;
+        }
+
+        public Builder examTime(String examTime) {
+            s.setExamTime(examTime);
+            return this;
+        }
+
+        public Builder students(Set<Student> students) {
+            s.setStudents(students);
+            return this;
+        }
 
         public ExamSession build() {
-            return new ExamSession(id, courseCode, examDate, examTime, students);
+            return s;
         }
     }
 }
