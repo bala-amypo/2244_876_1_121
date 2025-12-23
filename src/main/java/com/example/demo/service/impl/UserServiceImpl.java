@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import org.springframework.stereotype.Service;
+import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 
@@ -11,5 +12,15 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
+    @Override
+    public User register(User user) {
+        return userRepository.save(user);
     }
 }
