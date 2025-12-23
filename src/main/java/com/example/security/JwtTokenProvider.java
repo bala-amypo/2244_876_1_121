@@ -12,17 +12,21 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private final String secret = "secret-key-secret-key-secret-key";
-    private final long expiration = 86400000; // 1 day
+    private String secret = "secret-key-secret-key-secret-key";
+    private long expiration = 86400000; // 1 day
 
-    private final Key key = Keys.hmacShaKeyFor(secret.getBytes());
+    // ❌ NOT final anymore
+    private Key key;
 
     // ✅ DEFAULT CONSTRUCTOR (tests expect this)
     public JwtTokenProvider() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // ✅ USED BY TESTS (String, int)
+    // ✅ CONSTRUCTOR USED BY TESTS
     public JwtTokenProvider(String secret, int expiration) {
+        this.secret = secret;
+        this.expiration = expiration;
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
@@ -36,7 +40,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // ✅ THIS IS WHAT YOUR FILTER NEEDS (FIXES ERROR)
+    // ✅ REQUIRED BY JwtAuthenticationFilter
     public String getEmailFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -47,7 +51,7 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    // ✅ USED BY TESTS
+    // ✅ REQUIRED BY TESTS
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
