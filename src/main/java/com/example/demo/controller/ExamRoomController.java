@@ -23,18 +23,18 @@ public class ExamRoomController {
         return ResponseEntity.status(201).body(examRoomService.addRoom(room));
     }
 
-    // 🔥 REQUIRED BY TESTS
-    public ExamRoom add(ExamRoom room) {
+    // 🔥 USED BY TESTS
+    public ExamRoom addRoom(ExamRoom room) {
         return examRoomService.addRoom(room);
     }
 
-    // 🔥 REQUIRED BY TESTS
+    // 🔥 USED BY TESTS
     public List<ExamRoom> list() {
         return examRoomService.getAllRooms();
     }
 
-    // 🔥 REQUIRED BY TESTS
-    public ExamRoom add(Long id) {
+    // 🔥 USED BY TESTS
+    public ExamRoom get(Long id) {
         return examRoomService.getById(id);
     }
 }
