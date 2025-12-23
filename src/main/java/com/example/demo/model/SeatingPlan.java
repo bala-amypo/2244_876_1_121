@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "seating_plans")
@@ -10,22 +11,27 @@ public class SeatingPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private LocalDateTime generatedAt;
+
     @Column(length = 2000)
     private String arrangementJson;
 
     @ManyToOne
-    @JoinColumn(name = "exam_session_id")
     private ExamSession examSession;
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
     private ExamRoom room;
 
-    public SeatingPlan() {}
+    public SeatingPlan() {
+        this.generatedAt = LocalDateTime.now();
+    }
 
-    // ===== GETTERS =====
     public Long getId() {
         return id;
+    }
+
+    public LocalDateTime getGeneratedAt() {
+        return generatedAt;
     }
 
     public String getArrangementJson() {
@@ -40,9 +46,12 @@ public class SeatingPlan {
         return room;
     }
 
-    // ===== SETTERS =====
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setGeneratedAt(LocalDateTime generatedAt) {
+        this.generatedAt = generatedAt;
     }
 
     public void setArrangementJson(String arrangementJson) {
