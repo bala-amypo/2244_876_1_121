@@ -1,14 +1,13 @@
 package com.example.demo.service;
 
-import java.util.List;
-
 import com.example.demo.model.SeatingPlan;
+import java.util.List;
 
 public interface SeatingPlanService {
 
-    SeatingPlan save(SeatingPlan plan);
+    SeatingPlan generatePlan(Long examSessionId);
 
-    List<SeatingPlan> findAll();
+    SeatingPlan getPlan(Long id);
 
-    SeatingPlan findById(Long id);
+    List<SeatingPlan> getPlansBySession(Long sessionId);
 }

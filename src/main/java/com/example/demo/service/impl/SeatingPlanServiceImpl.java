@@ -1,13 +1,13 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.example.demo.exception.ApiException;
 import com.example.demo.model.SeatingPlan;
 import com.example.demo.repository.SeatingPlanRepository;
 import com.example.demo.service.SeatingPlanService;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class SeatingPlanServiceImpl implements SeatingPlanService {
@@ -19,18 +19,20 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
     }
 
     @Override
-    public SeatingPlan save(SeatingPlan plan) {
+    public SeatingPlan generatePlan(Long examSessionId) {
+        SeatingPlan plan = new SeatingPlan();
+        plan.setGeneratedAt(LocalDateTime.now());
+        plan.setArrangementJson("{}");
         return seatingPlanRepository.save(plan);
     }
 
     @Override
-    public List<SeatingPlan> findAll() {
-        return seatingPlanRepository.findAll();
+    public SeatingPlan getPlan(Long id) {
+        return seatingPlanRepository.findById(id).orElse(null);
     }
 
     @Override
-    public SeatingPlan findById(Long id) {
-        return seatingPlanRepository.findById(id)
-                .orElseThrow(() -> new ApiException("seating plan not found"));
+    public List<SeatingPlan> getPlansBySession(Long sessionId) {
+        return Collections.emptyList();
     }
 }

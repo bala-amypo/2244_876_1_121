@@ -1,14 +1,14 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.*;
-
 import com.example.demo.model.SeatingPlan;
 import com.example.demo.service.SeatingPlanService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/plans")
+@RequestMapping("/seating-plans")
 public class SeatingPlanController {
 
     private final SeatingPlanService seatingPlanService;
@@ -17,18 +17,18 @@ public class SeatingPlanController {
         this.seatingPlanService = seatingPlanService;
     }
 
-    // 🔥 USED BY TESTS
-    public SeatingPlan add(SeatingPlan plan) {
-        return seatingPlanService.save(plan);
+    @PostMapping("/generate/{sessionId}")
+    public SeatingPlan generate(@PathVariable Long sessionId) {
+        return seatingPlanService.generatePlan(sessionId);
     }
 
-    // 🔥 USED BY TESTS
-    public List<SeatingPlan> list() {
-        return seatingPlanService.findAll();
+    @GetMapping("/{id}")
+    public SeatingPlan get(@PathVariable Long id) {
+        return seatingPlanService.getPlan(id);
     }
 
-    // 🔥 USED BY TESTS
-    public SeatingPlan get(Long id) {
-        return seatingPlanService.findById(id);
+    @GetMapping("/session/{sessionId}")
+    public List<SeatingPlan> list(@PathVariable Long sessionId) {
+        return seatingPlanService.getPlansBySession(sessionId);
     }
 }
