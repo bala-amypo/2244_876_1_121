@@ -7,23 +7,14 @@ public class AuthRequest {
 
     public AuthRequest() {}
 
+    public AuthRequest(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     public String getEmail() { return email; }
-    public String getPassword() { return password; }
-
     public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-
-    // REQUIRED BY TESTS
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private final AuthRequest a = new AuthRequest();
-
-        public Builder email(String email) { a.setEmail(email); return this; }
-        public Builder password(String password) { a.setPassword(password); return this; }
-
-        public AuthRequest build() { return a; }
-    }
 }

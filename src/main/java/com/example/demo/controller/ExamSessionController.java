@@ -1,16 +1,17 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.ExamSession;
+import com.example.demo.service.ExamSessionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.model.ExamSession;
-import com.example.demo.service.ExamSessionService;
-
 @RestController
-@RequestMapping("/sessions")
+@RequestMapping("/api/sessions")
 public class ExamSessionController {
 
-    private final ExamSessionService examSessionService;
+    @Autowired
+    private ExamSessionService examSessionService;
 
     public ExamSessionController(ExamSessionService examSessionService) {
         this.examSessionService = examSessionService;
@@ -18,12 +19,13 @@ public class ExamSessionController {
 
     @PostMapping
     public ResponseEntity<ExamSession> create(@RequestBody ExamSession session) {
-        return ResponseEntity.status(201).body(examSessionService.createSession(session));
+        ExamSession saved = examSessionService.createSession(session);
+        return ResponseEntity.ok(saved);
     }
 
-    // REQUIRED BY TESTS
     @GetMapping("/{id}")
     public ResponseEntity<ExamSession> get(@PathVariable Long id) {
-        return ResponseEntity.ok(examSessionService.getSession(id));
+        ExamSession session = examSessionService.getSession(id);
+        return ResponseEntity.ok(session);
     }
 }

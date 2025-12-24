@@ -1,18 +1,19 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
+import com.example.demo.model.ExamRoom;
+import com.example.demo.service.ExamRoomService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.model.ExamRoom;
-import com.example.demo.service.ExamRoomService;
+import java.util.List;
 
 @RestController
-@RequestMapping("/rooms")
+@RequestMapping("/api/rooms")
 public class ExamRoomController {
 
-    private final ExamRoomService examRoomService;
+    @Autowired
+    private ExamRoomService examRoomService;
 
     public ExamRoomController(ExamRoomService examRoomService) {
         this.examRoomService = examRoomService;
@@ -20,21 +21,13 @@ public class ExamRoomController {
 
     @PostMapping
     public ResponseEntity<ExamRoom> add(@RequestBody ExamRoom room) {
-        return ResponseEntity.status(201).body(examRoomService.addRoom(room));
+        ExamRoom saved = examRoomService.addRoom(room);
+        return ResponseEntity.ok(saved);
     }
 
-    // 🔥 USED BY TESTS
-    public ExamRoom addRoom(ExamRoom room) {
-        return examRoomService.addRoom(room);
-    }
-
-    // 🔥 USED BY TESTS
-    public List<ExamRoom> list() {
-        return examRoomService.getAllRooms();
-    }
-
-    // 🔥 USED BY TESTS
-    public ExamRoom get(Long id) {
-        return examRoomService.getById(id);
+    @GetMapping
+    public ResponseEntity<List<ExamRoom>> list() {
+        List<ExamRoom> rooms = examRoomService.getAllRooms();
+        return ResponseEntity.ok(rooms);
     }
 }
