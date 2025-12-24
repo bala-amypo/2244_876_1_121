@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.ApiException;
 import com.example.demo.model.ExamRoom;
 import com.example.demo.model.ExamSession;
 import com.example.demo.model.SeatingPlan;
@@ -7,55 +8,82 @@ import com.example.demo.repository.ExamRoomRepository;
 import com.example.demo.repository.ExamSessionRepository;
 import com.example.demo.repository.SeatingPlanRepository;
 import com.example.demo.service.SeatingPlanService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SeatingPlanServiceImpl implements SeatingPlanService {
 
-    private final SeatingPlanRepository seatingPlanRepository;
-    private final ExamSessionRepository examSessionRepository;
-    private final ExamRoomRepository examRoomRepository;
+    @Autowired
+    private ExamSessionRepository examSessionRepository;
 
-    public SeatingPlanServiceImpl(SeatingPlanRepository seatingPlanRepository,
-                                  ExamSessionRepository examSessionRepository,
-                                  ExamRoomRepository examRoomRepository) {
-        this.seatingPlanRepository = seatingPlanRepository;
+    @Autowired
+    private SeatingPlanRepository seatingPlanRepository;
+
+    @Autowired
+    private ExamRoomRepository examRoomRepository;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public SeatingPlanServiceImpl(ExamSessionRepository examSessionRepository, SeatingPlanRepository seatingPlanRepository, ExamRoomRepository examRoomRepository) {
         this.examSessionRepository = examSessionRepository;
+        this.seatingPlanRepository = seatingPlanRepository;
         this.examRoomRepository = examRoomRepository;
     }
 
-    // ================= REQUIRED BY INTERFACE =================
-
     @Override
-    public SeatingPlan generatePlan(Long examSessionId) {
-        ExamSession session = examSessionRepository.findById(examSessionId)
-                .orElseThrow(() -> new RuntimeException("ExamSession not found"));
+    public SeatingPlan generatePlan(Long sessionId) {
+        ExamSession session = examSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new ApiException("Session not found"));
 
         List<ExamRoom> rooms = examRoomRepository.findAll();
         if (rooms.isEmpty()) {
-            throw new RuntimeException("No rooms available");
+            throw new ApiException("No room available");
         }
 
-        SeatingPlan plan = new SeatingPlan();
-        plan.setExamSession(session);
-        plan.setRoom(rooms.get(0));
-        plan.setArrangementJson("{}");
-        plan.setGeneratedAt(LocalDateTime.now());
+        ExamRoom selectedRoom = rooms.stream()
+                .filter(r -> r.getCapacity() >= session.getStudents().size())
+                .min(Comparator.comparing(ExamRoom::getCapacity))
+                .orElseThrow(() -> new ApiException("No suitable room"));
+
+        // Simple arrangement: list of roll numbers
+        List<String> rollNumbers = session.getStudents().stream()
+                .map(s -> s.getRollNumber())
+                .collect(Collectors.toList());
+
+        String arrangementJson;
+        try {
+            arrangementJson = objectMapper.writeValueAsString(Map.of("seats", rollNumbers));
+        } catch (JsonProcessingException e) {
+            arrangementJson = "{}";
+        }
+
+        SeatingPlan plan = SeatingPlan.builder()
+                .examSession(session)
+                .room(selectedRoom)
+                .arrangementJson(arrangementJson)
+                .generatedAt(LocalDateTime.now())
+                .build();
 
         return seatingPlanRepository.save(plan);
     }
 
     @Override
-    public List<SeatingPlan> getPlansBySession(Long examSessionId) {
-        return seatingPlanRepository.findByExamSessionId(examSessionId);
+    public SeatingPlan getPlan(Long id) {
+        return seatingPlanRepository.findById(id)
+                .orElseThrow(() -> new ApiException("Plan not found"));
     }
 
     @Override
-    public SeatingPlan getById(Long id) {
-        return seatingPlanRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("SeatingPlan not found"));
+    public List<SeatingPlan> getPlansBySession(Long sessionId) {
+        return seatingPlanRepository.findByExamSessionId(sessionId);
     }
 }

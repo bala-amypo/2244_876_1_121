@@ -1,87 +1,67 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtTokenProvider {
 
-    private String secret = "secret-key-secret-key-secret-key";
-    private long expiration = 86400000;
+    private final SecretKey key;
+    private final long validityInMilliseconds;
 
-    private Key key;
-
-    // REQUIRED BY SPRING + TESTS
     public JwtTokenProvider() {
+        this("this_is_a_test_secret_key_must_be_long_enough_for_hmac_sha_which_is_long", 3600000);
+    }
+
+    public JwtTokenProvider(String secret, long validity) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.validityInMilliseconds = validity;
     }
 
-    // REQUIRED BY TESTS
-    public JwtTokenProvider(String secret, int expiration) {
-        this.secret = secret;
-        this.expiration = expiration;
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-    }
-
-    // ===== TOKEN GENERATION =====
-
-    public String generateToken(String email) {
-        return Jwts.builder()
-                .setSubject(email)
-                .claim("role", "USER")
-                .claim("userId", 0L)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    // REQUIRED BY TESTS
     public String generateToken(Long userId, String email, String role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
+        claims.put("role", role);
+
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + validityInMilliseconds);
+
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(email)
-                .claim("role", role)
-                .claim("userId", userId)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(key)
                 .compact();
-    }
-
-    // ===== TOKEN READERS =====
-
-    public String getEmailFromToken(String token) {
-        return getAllClaims(token).getSubject();
-    }
-
-    public String getRoleFromToken(String token) {
-        return getAllClaims(token).get("role", String.class);
-    }
-
-    public Long getUserIdFromToken(String token) {
-        return getAllClaims(token).get("userId", Long.class);
     }
 
     public boolean validateToken(String token) {
         try {
-            getAllClaims(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
 
-    private Claims getAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public String getEmailFromToken(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return claims.getSubject();
+    }
+
+    public String getRoleFromToken(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return claims.get("role", String.class);
+    }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return claims.get("userId", Long.class);
     }
 }

@@ -1,18 +1,19 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.example.demo.exception.ApiException;
 import com.example.demo.model.ExamRoom;
 import com.example.demo.repository.ExamRoomRepository;
 import com.example.demo.service.ExamRoomService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ExamRoomServiceImpl implements ExamRoomService {
 
-    private final ExamRoomRepository examRoomRepository;
+    @Autowired
+    private ExamRoomRepository examRoomRepository;
 
     public ExamRoomServiceImpl(ExamRoomRepository examRoomRepository) {
         this.examRoomRepository = examRoomRepository;
@@ -20,16 +21,18 @@ public class ExamRoomServiceImpl implements ExamRoomService {
 
     @Override
     public ExamRoom addRoom(ExamRoom room) {
-        if (room.getRows() == null || room.getColumns() == null
-                || room.getRows() <= 0 || room.getColumns() <= 0) {
-            throw new ApiException("rows and columns must be positive");
+        if (room.getRoomNumber() == null || room.getRoomNumber().isEmpty()) {
+            throw new ApiException("Room number is required");
         }
-
-        examRoomRepository.findByRoomNumber(room.getRoomNumber())
-                .ifPresent(r -> {
-                    throw new ApiException("room exists");
-                });
-
+        if (room.getRows() == null || room.getRows() <= 0) {
+            throw new ApiException("Rows must be positive");
+        }
+        if (room.getColumns() == null || room.getColumns() <= 0) {
+            throw new ApiException("Columns must be positive");
+        }
+        if (examRoomRepository.findByRoomNumber(room.getRoomNumber()).isPresent()) {
+            throw new ApiException("Room with room number already exists");
+        }
         room.ensureCapacityMatches();
         return examRoomRepository.save(room);
     }
@@ -37,12 +40,5 @@ public class ExamRoomServiceImpl implements ExamRoomService {
     @Override
     public List<ExamRoom> getAllRooms() {
         return examRoomRepository.findAll();
-    }
-
-    // REQUIRED BY TESTS
-    @Override
-    public ExamRoom getById(Long id) {
-        return examRoomRepository.findById(id)
-                .orElseThrow(() -> new ApiException("room not found"));
     }
 }
