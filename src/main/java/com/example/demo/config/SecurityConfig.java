@@ -1,7 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.security.JwtAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,33 +16,53 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-    http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(
-                "/swagger-ui/**",
-                "/v3/api-docs/**",
-                "/swagger-ui.html",
-                "/api/rooms/**",
-                "/api/sessions/**",
-                "/api/auth/**",
-                "/api/plans/**",
-                "/api/students/**"
-            ).permitAll()
-            .anyRequest().authenticated()
-        );
+        http
+            // Disable CSRF for REST APIs
+            .csrf(csrf -> csrf.disable())
 
-    return http.build();
-}
+            // JWT = Stateless
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
 
+            // Authorization rules
+            .authorizeHttpRequests(auth -> auth
+                // Swagger
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui.html"
+                ).permitAll()
+
+                // Public APIs
+                .requestMatchers(
+                    "/api/auth/**",
+                    "/api/sessions/**",
+                    "/api/rooms/**",
+                    "/api/students/**",
+                    "/api/plans/**"
+                ).permitAll()
+
+                // Everything else needs authentication
+                .anyRequest().authenticated()
+            )
+
+            // Register JWT filter
+            .addFilterBefore(
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class
+            );
+
+        return http.build();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,7 +70,8 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }
