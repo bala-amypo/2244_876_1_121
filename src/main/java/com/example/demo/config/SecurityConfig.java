@@ -26,7 +26,6 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
     http
         .csrf(csrf -> csrf.disable())
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(
                 "/swagger-ui/**",
@@ -39,8 +38,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
                 "/api/students/**"
             ).permitAll()
             .anyRequest().authenticated()
-        )
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        );
 
     return http.build();
 }
