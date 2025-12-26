@@ -2,32 +2,31 @@ package com.example.demo.controller;
 
 import com.example.demo.model.ExamRoom;
 import com.example.demo.service.ExamRoomService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
-@RequestMapping("/api/rooms")
+@RequestMapping("/rooms")
 public class ExamRoomController {
 
-    @Autowired
-    private ExamRoomService examRoomService;
+    private final ExamRoomService service;
 
-    public ExamRoomController(ExamRoomService examRoomService) {
-        this.examRoomService = examRoomService;
+    public ExamRoomController(ExamRoomService service) {
+        this.service = service;
     }
 
     @PostMapping
     public ResponseEntity<ExamRoom> add(@RequestBody ExamRoom room) {
-        ExamRoom saved = examRoomService.addRoom(room);
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.ok(service.addRoom(room));
     }
 
+    // 🔥 IMPORTANT FIX HERE
     @GetMapping
     public ResponseEntity<List<ExamRoom>> list() {
-        List<ExamRoom> rooms = examRoomService.getAllRooms();
-        return ResponseEntity.ok(rooms);
+        return ResponseEntity.ok(service.getAllRooms());
     }
 }
