@@ -25,8 +25,11 @@ public class ExamSessionServiceImpl implements ExamSessionService {
         this.studentRepo = studentRepo;
     }
 
-    @Override
+   @Override
 public ExamSession createSession(ExamSession session) {
+
+    // 🚫 Never allow ID on POST
+    session.setId(null);
 
     if (session.getExamDate().isBefore(LocalDate.now())) {
         throw new ApiException("Past date not allowed");
@@ -36,25 +39,14 @@ public ExamSession createSession(ExamSession session) {
         throw new ApiException("At least 1 student required");
     }
 
-    // ✅ CHECK IF RECORD REALLY EXISTS IN DATABASE
-    if (session.getId() != null && repo.existsById(session.getId())) {
-
-        ExamSession existing = repo.findById(session.getId()).get();
-        Set<Student> mergedStudents = new HashSet<>(existing.getStudents());
-
-        for (Student s : session.getStudents()) {
-            Student managedStudent = studentRepo.findById(s.getId())
-                    .orElseThrow(() -> new ApiException("Student not found"));
-            mergedStudents.add(managedStudent);
-        }
-
-        existing.setStudents(mergedStudents);
-        return repo.save(existing);
+    // 🚫 Students must be NEW here
+    for (Student s : session.getStudents()) {
+        s.setId(null);
     }
 
-    // ✅ BRAND NEW SESSION
     return repo.save(session);
 }
+
 
 
     @Override
