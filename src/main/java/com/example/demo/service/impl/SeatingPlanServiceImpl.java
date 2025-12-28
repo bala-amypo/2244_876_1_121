@@ -71,9 +71,11 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
                        .append("\",");
         }
 
-        // remove last comma
-        arrangement.deleteCharAt(arrangement.length() - 1);
+        if (arrangement.length() > 1) {
+           arrangement.deleteCharAt(arrangement.length() - 1);
+        }
         arrangement.append("}");
+
 
         SeatingPlan plan = new SeatingPlan();
         plan.setExamSession(session);
