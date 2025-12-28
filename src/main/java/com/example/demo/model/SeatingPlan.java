@@ -1,46 +1,6 @@
-// package com.example.demo.model;
-
-// import java.time.LocalDateTime;
-// import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-// import jakarta.persistence.*;
-// import lombok.*;
-
-// @Entity
-// @Table(name = "seating_plans")
-// @Getter
-// @Setter
-// @Builder
-// @NoArgsConstructor
-// @AllArgsConstructor
-// public class SeatingPlan {
-//     @Id
-//     @GeneratedValue(strategy=GenerationType.IDENTITY)
-//     private Long id;
-
-//     @ManyToOne(fetch = FetchType.EAGER)
-//     @JsonIgnoreProperties({"students", "hibernateLazyInitializer", "handler"}) 
-//     private ExamSession examSession;
-
-//     @ManyToOne(fetch = FetchType.EAGER)
-//     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-//     private ExamRoom room;
-
-//     @Column(columnDefinition = "TEXT")
-//     private String arrangementJson;
-    
-//     private LocalDateTime generatedAt;
-
-//     @PrePersist
-//     public void prePersist() {
-//         if (generatedAt == null) {
-//             generatedAt = LocalDateTime.now();
-//         }
-//     }
-// }
 package com.example.demo.model;
 
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -53,24 +13,21 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SeatingPlan {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "exam_session_id")
-    @JsonIgnoreProperties({"students", "hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"students", "hibernateLazyInitializer", "handler"}) 
     private ExamSession examSession;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "room_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ExamRoom room;
 
     @Column(columnDefinition = "TEXT")
     private String arrangementJson;
-
+    
     private LocalDateTime generatedAt;
 
     @PrePersist
@@ -80,3 +37,4 @@ public class SeatingPlan {
         }
     }
 }
+
