@@ -47,7 +47,7 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
 
         ExamRoom selectedRoom = null;
 
-        // 🔥 NO STREAMS — MANUAL CAPACITY CHECK
+        
         for (ExamRoom room : rooms) {
             if (room.getCapacity() >= studentCount) {
                 selectedRoom = room;
