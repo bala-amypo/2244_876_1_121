@@ -24,7 +24,7 @@ public class JwtTokenProvider {
         this.validityInMs = validityInMs;
     }
 
-    // ================== TOKEN GENERATION ==================
+    
     public String generateToken(Long userId, String email, String role) {
 
         Claims claims = Jwts.claims().setSubject(email);
@@ -66,7 +66,7 @@ public class JwtTokenProvider {
         return getClaims(token).get("userId", Long.class);
     }
 
-    // ================== INTERNAL ==================
+    
     private Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
