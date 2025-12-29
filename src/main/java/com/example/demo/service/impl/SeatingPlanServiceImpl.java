@@ -59,7 +59,7 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
             throw new ApiException("No room available");
         }
 
-        // 🔥 Seat-wise arrangement: Seat 1, Seat 2, ...
+        
         StringBuilder arrangement = new StringBuilder("{");
         int seatNo = 1;
 
