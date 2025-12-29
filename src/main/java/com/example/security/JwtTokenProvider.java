@@ -42,7 +42,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // ================== VALIDATION ==================
+    
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -52,7 +52,7 @@ public class JwtTokenProvider {
         }
     }
 
-    // ================== REQUIRED BY TESTS ==================
+    
 
     public String getEmailFromToken(String token) {
         return getClaims(token).getSubject();

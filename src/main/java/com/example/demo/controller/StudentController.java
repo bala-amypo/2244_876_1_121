@@ -24,7 +24,7 @@ public class StudentController {
         return ResponseEntity.ok(service.addStudent(student));
     }
 
-    // 🔥 IMPORTANT FIX HERE
+    
     @GetMapping
     public ResponseEntity<List<Student>> list() {
         return ResponseEntity.ok(service.getAllStudents());
